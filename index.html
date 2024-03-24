@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: beige;
+        }
+
+        body {
+            background-color: black;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        input, select {
+            background-color: rgb(146, 146, 146);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <label for="converter">
+            Converter
+            <input type="text" name="" id="converter">
+            <select name="" id="convertFrom">
+                <option value="dec">decimal</option>
+                <option value="hex">hexadecimal</option>
+                <option value="oct">octal</option>
+                <option value="bin">binário</option>
+            </select>
+        </label>
+        <label for="convertido">
+            Conversão
+            <input type="text" name="" id="convertido">
+            <select name="" id="convertTo">
+                <option value="hex">hexadecimal</option>
+                <option value="dec">decimal</option>
+                <option value="oct">octal</option>
+                <option value="bin">binário</option>
+            </select>
+        </label>
+    </div>
+    <script>
+        const numberToConvert = document.getElementById('converter')
+        const convertido = document.getElementById('convertido')
+
+
+        const convertType = document.getElementById('convertFrom')
+        let convertFrom = convertType.value
+        const convertedType = document.getElementById('convertTo')
+        let convertTo = convertedType.value
+
+
+        converter.addEventListener('change', (event) => {
+            let result
+            switch (convertTo) {
+                case 'hex':
+                    result = convertToHexadecimal(convertFrom, event.target.value)
+                    break;
+                case 'dec':
+                    result = convertToDecimal(convertFrom, event.target.value)
+                    break;
+                case 'bin':
+                    
+                    break;
+                case 'oct':
+                    result = convertToOctal(convertFrom, event.target.value)
+                    break;
+            
+                default:
+                    break;
+            }
+            convertido.value = result
+
+        })
+
+
+        convertType.addEventListener('change', (event) => {
+            convertFrom = event.target.value
+        })
+
+        convertedType.addEventListener('change', (event) => {
+            convertTo = event.target.value
+        })
+
+        function convertToDecimal(valueType, value) {
+            let digitsArray = []
+
+            switch (valueType) {
+                case 'hex':
+                    const hexadecimalValues = ['A', 'B', 'C', 'D', 'E', 'F']
+
+                    try {
+                        if (isNaN(parseInt(value))) {
+                            value.split('').map(e => {
+                                let indexOfHexadecimalDigit = hexadecimalValues.indexOf(e.toUpperCase())
+
+                                if (indexOfHexadecimalDigit === -1 && !isNaN(e)) {
+                                    digitsArray.unshift(e)
+                                } if (indexOfHexadecimalDigit === -1) {
+                                    throw new Error('Valor invalido')
+                                } else {
+                                    digitsArray.unshift(indexOfHexadecimalDigit + 10)
+                                }
+                            })
+                        } else {
+                            digitsArray = value.split('').reverse()
+                        }                        
+                    } catch (err) {
+                        window.alert(err)
+                    }
+
+                    return convertBase(digitsArray, 16)
+
+                case 'oct':
+                    try {
+                        value.split('').forEach(number => {
+                            if (parseInt(number) > 7) {
+                                throw new Error('Um dígito maior do que 7 foi encontrado')
+                            } else {
+                                digitsArray.push(parseInt(number))
+                            }
+                        })
+                    } catch (error) {
+                        window.alert(error)
+                    }
+
+                    return convertBase(digitsArray, 8)
+
+                case 'bin':
+                    try {
+                        value.split('').forEach(number => {
+                            let numberInt = parseInt(number)
+                            if (numberInt != 0 && numberInt != 1) {
+                                throw new Error('Apenas 0 ou 1 são permitidos')
+                            } else {
+                                digitsArray.push(numberInt)
+                            }
+                        })
+                    } catch (error) {
+                        window.alert(error)
+                    }
+
+                    return convertBase(digitsArray, 2)
+                default:
+                    break;
+            }
+        }
+
+        function convertToHexadecimal(valueType, value) {
+            switch (valueType) {
+                case 'dec':
+                    let numbers = []
+                    while (value > 16) {
+                        numbers.unshift(value % 16)
+                        value = value / 16
+                    } 
+                    numbers.unshift(parseInt(value))
+                    return numbers.join('')
+                    console.log(numbers);
+                    break;
+                case 'bin':
+                    
+                    break;
+                case 'oct':
+                    
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+
+        function convertToOctal(valueType, value) {
+            switch (valueType) {
+                case 'dec':
+                let numbers = []
+                    while (value > 7) {
+                        numbers.unshift(value % 8)
+                        value = value / 8
+                    } 
+                    numbers.unshift(parseInt(value))
+                    return numbers.join('')
+                    console.log(numbers);
+                    break;
+                case 'bin':
+                    
+                    break;
+                case 'hex':
+                    
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+
+        function convertBase(array, divisor) {
+            let soma = 0
+            array = array.reverse().map((digit, index) => digit * (divisor ** index))
+            array.forEach(digit => soma += digit)
+            return soma
+        }
+    </script>
+</body>
+</html>
